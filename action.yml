@@ -1,0 +1,21 @@
+name: NoHustle URL→Markdown
+description: Convert any URL to Markdown using NoHustle API
+inputs:
+  url:
+    description: URL to convert
+    required: true
+outputs:
+  markdown_path:
+    description: Path to generated Markdown
+    value: ${{ steps.nohustle.outputs.markdown_path }}
+runs:
+  using: composite
+  steps:
+    - id: nohustle
+      shell: bash
+      run: |
+        set -euo pipefail
+        URL="${{ inputs.url }}"
+        OUT="nohustle.md"
+        curl -fsSL 'https://nohustle-api.onrender.com/url2md' --get --data-urlencode "url=$URL" -o "$OUT"
+        echo "markdown_path=$OUT" >> "$GITHUB_OUTPUT"
